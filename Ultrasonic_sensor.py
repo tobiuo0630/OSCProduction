@@ -4,6 +4,9 @@ import sys
 from bluepy.btle import Scanner, DefaultDelegate
 from tkinter import *
 from tkinter import ttk
+import threading
+
+
 
 trig_pin =15 #GPIO(General Purpose input/output(汎用入出力）) 15 command to emit ultrasound
 echo_pin = 14 #GPIO 14 returns reflection time
@@ -50,27 +53,49 @@ def get_distance():
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
 
 
-def display_bring(display_text):
+def display_bring():
     root = Tk()
-    root.attributes('-fullscreen',True)
+    #root.attributes('-fullscreen',True)
     root.configure(bg="white")
     frm = ttk.Frame(root, padding=10)
     frm.grid()
-    ttk.Label(frm, text=display_text).grid(column=0, row=0)
+    ttk.Label(frm, text=default_text).grid(column=0, row=0)
+    ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
     root.mainloop()
   
+def print_test():
+    while True:
+        try:
+            print(1)
+            time.sleep(5)
+        
+        except KeyboardInterrupt:
+            sys.exit()
+    
+    
+def Ultrasonic_scan():
+    while True:
+        try:
+            distance = '{:.1f}'.format(get_distance())
+            print("Distance: " + distance + "cm")
+            if(float(distance)<=5.0):
+               global default_text
+               default_text = "スキャン中"
+               print_test()
+            time.sleep(5)
+            
+        except KeyboardInterrupt:
+            GPIO.cleanup()
+            sys.exit()
+
 
 scanner = Scanner().withDelegate(ScanDelegate())
-default_text = '待機中'
+default_text = "待機中"
 
-while True:
-    try:
-        distance = '{:.1f}'.format(get_distance())
-        print("Distance: " + distance + "cm")
-        if(float(distance)<=5.0):
-            devices = scanner.scan(5.0)
-        time.sleep(10)
-        
-    except KeyboardInterrupt:
-        GPIO.cleanup()
-        sys.exit()
+if __name__ == "__main__":
+
+    display_thread = threading.Thread(target=display_bring)
+    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan)
+    
+    display_thread.start()
+    Ultrasonic_thread.start()
