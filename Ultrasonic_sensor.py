@@ -2,15 +2,15 @@ import RPi.GPIO as GPIO
 import time
 import sys
 from bluepy.btle import Scanner, DefaultDelegate
-from tkinter import *
-from tkinter import ttk
 import threading
+import GUI
 
 
 
 trig_pin =15 #GPIO(General Purpose input/output(汎用入出力）) 15 command to emit ultrasound
 echo_pin = 14 #GPIO 14 returns reflection time
 speed_of_sound = 34370 #20℃での音速(cm/s)
+
 
 #pythonでGPIOピンを安全かつ意図通りに使うための初期化設定
 GPIO.setmode(GPIO.BCM)#Broadcom SOC channel ピンの指定を物理的な位置１番２番ではなくCPUの機能番号GPIO2,3として扱う
@@ -29,7 +29,6 @@ class ScanDelegate(DefaultDelegate):
         if isNewDev:
             if(dev.addr==self.Earfun_Air_MacAddress and dev.rssi>=-50):
                 print("Device %s (%s), RSSI=%d dB" % (dev.addr, dev.addrType, dev.rssi))
-                display_bring(dev.addr)
                 
                 
         elif isNewData:
@@ -53,16 +52,6 @@ def get_distance():
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
 
 
-def display_bring():
-    root = Tk()
-    #root.attributes('-fullscreen',True)
-    root.configure(bg="white")
-    frm = ttk.Frame(root, padding=10)
-    frm.grid()
-    ttk.Label(frm, text=default_text).grid(column=0, row=0)
-    ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
-    root.mainloop()
-  
 def print_test():
     while True:
         try:
@@ -73,15 +62,15 @@ def print_test():
             sys.exit()
     
     
-def Ultrasonic_scan():
+def Ultrasonic_scan(event,scanner):
     while True:
         try:
             distance = '{:.1f}'.format(get_distance())
             print("Distance: " + distance + "cm")
             if(float(distance)<=5.0):
-               global default_text
-               default_text = "スキャン中"
-               print_test()
+               event.set()
+               device = scanner.scan(10.0)
+               event.set()
             time.sleep(5)
             
         except KeyboardInterrupt:
@@ -91,11 +80,12 @@ def Ultrasonic_scan():
 
 scanner = Scanner().withDelegate(ScanDelegate())
 default_text = "待機中"
+event = threading.Event()
 
 if __name__ == "__main__":
-
-    display_thread = threading.Thread(target=display_bring)
-    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan)
+    
+    display_thread = threading.Thread(target=GUI.display_bring,args=(event,scanner))
+    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(event,))
     
     display_thread.start()
     Ultrasonic_thread.start()
