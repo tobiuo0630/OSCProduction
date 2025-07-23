@@ -29,9 +29,7 @@ class ScanDelegate(DefaultDelegate):
 
     def handleDiscovery(self, dev, isNewDev, isNewData):#dev 発見したデバイスの情報(MAC) isNewDev デバイスの初回発見時True isNewData 発見済みのデバイスから新規データ受診時 True
         if isNewDev:
-            if(dev.addr==self.Earfun_Air_MacAddress and dev.rssi>=-50):
-                print("Device %s (%s), RSSI=%d dB" % (dev.addr, dev.addrType, dev.rssi))
-                
+             print(1)   
                 
         elif isNewData:
             print("Received new data from", dev.addr)    
@@ -53,16 +51,6 @@ def get_distance():
     
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
 
-
-def print_test():
-    while True:
-        try:
-            print(1)
-            time.sleep(5)
-        
-        except KeyboardInterrupt:
-            sys.exit()
-    
     
 def Ultrasonic_scan(event,queue,scanner):
     while True:
@@ -73,15 +61,17 @@ def Ultrasonic_scan(event,queue,scanner):
                 scan = True
                 queue.put(scan)
                 devices = scanner.scan(10.0)
+                
                 queue.put(devices)
-            time.sleep(5)
+                
+            time.sleep(10)
             
         except KeyboardInterrupt:
             GPIO.cleanup()
             sys.exit()
 
 
-scanner = Scanner().withDelegate(ScanDelegate())
+scanner = Scanner()#.withDelegate(ScanDelegate())
 default_text = "待機中"
 event = threading.Event()
 scan = False
