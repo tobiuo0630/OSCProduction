@@ -1,24 +1,30 @@
-from tkinter import *
-from tkinter import ttk
-import threading
+import tkinter
+import sys
 
-
-def display_bring(event):
-    root = Tk()
+def display_bring(queue,event,root):
+    
     #root.attributes('-fullscreen',True)
     root.configure(bg="white")
-    text_variable = root.StringVar()
-    text_variable.set("初期メッセージ")
-    frm = ttk.Frame(root, padding=10)
-    frm.grid()
-    ttk.Label(frm, text=text_variable).grid(column=0, row=0)
-    ttk.Button(frm, text="Quit", command=root.destroy).grid(column=1, row=0)
-
-    signal_reception_thread = threading.Thread(target=Signal_reception,args=(event))
-    signal_reception_thread.start()
+    display_text = tkinter.Label(text="待機中",background='#ffffff')
+    display_text.place(x=100,y=100)
+    
+    event_catch(queue,display_text,root)
 
     root.mainloop()
 
 
-def Signal_reception(event):
-    event.wait()
+def event_catch(queue,display_text,root):
+    if(not(queue.qsize()==0)):
+        received_data = queue.get()
+        if(isinstance(received_data,bool) and received_data):
+            #文字の書き換え
+            display_text["text"] = "スキャン中"
+        elif(isinstance(received_data,list)):
+            #関数（received_data）
+    else:
+        root.after(100,event_catch,queue,display_text,root)
+
+
+def bluetoothTag_judg(received_data):
+    for dev in received_data:
+        if(dev==address)

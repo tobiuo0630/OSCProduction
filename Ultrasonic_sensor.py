@@ -4,6 +4,8 @@ import sys
 from bluepy.btle import Scanner, DefaultDelegate
 import threading
 import GUI
+from queue import Queue
+import tkinter
 
 
 
@@ -62,15 +64,16 @@ def print_test():
             sys.exit()
     
     
-def Ultrasonic_scan(event,scanner):
+def Ultrasonic_scan(event,queue,scanner):
     while True:
         try:
             distance = '{:.1f}'.format(get_distance())
             print("Distance: " + distance + "cm")
             if(float(distance)<=5.0):
-               event.set()
-               device = scanner.scan(10.0)
-               event.set()
+                scan = True
+                queue.put(scan)
+                devices = scanner.scan(10.0)
+                queue.put(devices)
             time.sleep(5)
             
         except KeyboardInterrupt:
@@ -81,11 +84,15 @@ def Ultrasonic_scan(event,scanner):
 scanner = Scanner().withDelegate(ScanDelegate())
 default_text = "待機中"
 event = threading.Event()
+scan = False
+
 
 if __name__ == "__main__":
+    queue = Queue()
+    root = tkinter.Tk()
     
-    display_thread = threading.Thread(target=GUI.display_bring,args=(event,scanner))
-    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(event,))
-    
-    display_thread.start()
+    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(event,queue,scanner))
     Ultrasonic_thread.start()
+    
+    GUI.display_bring(queue,event,root)
+    
