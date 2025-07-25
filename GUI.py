@@ -54,7 +54,9 @@ def event_catch(queue,root,display_text,result_text):
         else:
             hidden(display_text[1])
             bluetoothTag_judg(received_data,result_text)
-            display(display_text[0],100,100)
+            result_text_allHidden(display[0],result_text)
+            root.after(10000,result_text_allHidden,display[0],result_text)
+            
     root.after(100,event_catch,queue,root,display_text,result_text)
 
 
@@ -76,20 +78,6 @@ def bluetoothTag_judg(received_data,result_text):
         display(result_text[1],100,70)
     if(not(black)):
         display(result_text[3],100,110)
-
-    time.sleep(10)
-    if(not(white) and not(black)):
-        hidden(result_text[1])
-        hidden(result_text[3])
-    elif(white and black):
-        hidden(result_text[0])
-        hidden(result_text[2])
-    elif(white and not(black)):
-        hidden(result_text[0])
-        hidden(result_text[3])
-    elif(not(white) and black):
-        hidden(result_text[1])
-        hidden(result_text[2])
     
             
 #文字表示関数:
@@ -99,3 +87,9 @@ def hidden(target_text):
 
 def display(target_text,X,Y):
     target_text.place(x=X,y=Y)
+
+
+def result_text_allHidden(display_text,result_text):
+    for i in result_text_allHidden:
+        hidden(i)
+    display(display_text,100,100)
