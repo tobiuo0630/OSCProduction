@@ -52,7 +52,7 @@ def get_distance():
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
 
     
-def Ultrasonic_scan(event,queue,scanner):
+def Ultrasonic_scan(queue,scanner):
     while True:
         try:
             distance = '{:.1f}'.format(get_distance())
@@ -73,7 +73,6 @@ def Ultrasonic_scan(event,queue,scanner):
 
 scanner = Scanner()#.withDelegate(ScanDelegate())
 default_text = "待機中"
-event = threading.Event()
 scan = False
 
 
@@ -81,8 +80,8 @@ if __name__ == "__main__":
     queue = Queue()
     root = tkinter.Tk()
     
-    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(event,queue,scanner))
+    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(queue,scanner))
     Ultrasonic_thread.start()
     
-    GUI.display_bring(queue,event,root)
+    GUI.display_bring(queue,root)
     
