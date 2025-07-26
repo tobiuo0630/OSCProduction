@@ -1,6 +1,5 @@
 import tkinter
 import tkinter.font as font
-import time
 
 
 def display_bring(queue,root):
@@ -54,42 +53,45 @@ def event_catch(queue,root,display_text,result_text):
         else:
             hidden(display_text[1])
             bluetoothTag_judg(received_data,result_text)
-            result_text_allHidden(display[0],result_text)
-            root.after(10000,result_text_allHidden,display[0],result_text)
+
+            
+            #display(display_text[0],100,100)
             
     root.after(100,event_catch,queue,root,display_text,result_text)
 
 
 def bluetoothTag_judg(received_data,result_text):
-    AirTag_white_Mac = "4c:e1:00:38:10:36"
-    AirTag_black_Mac = "4c:e1:00:36:07:81"
+    AirTag_black_Mac = "4c:e1:00:38:10:36"
+    AirTag_white_Mac = "4c:e1:00:36:07:81"
     white=False
     black=False
+    result_text_allHidden(result_text)
     
     for dev in received_data:
         if(dev.addr==AirTag_white_Mac):
-            display(result_text[0],100,70)
+            display(result_text[0],200,70)
             white=True
         if(dev.addr==AirTag_black_Mac):
-            display(result_text[2],100,110)  
+            display(result_text[2],200,110)  
             black=True        
     
     if(not(white)):
-        display(result_text[1],100,70)
+        display(result_text[1],200,70)
     if(not(black)):
-        display(result_text[3],100,110)
+        display(result_text[3],200,110)
     
-            
+
 #文字表示関数:
 def hidden(target_text):
-    target_text.forget()
+    target_text.place_forget()
 
 
 def display(target_text,X,Y):
     target_text.place(x=X,y=Y)
 
 
-def result_text_allHidden(display_text,result_text):
-    for i in result_text_allHidden:
-        hidden(i)
-    display(display_text,100,100)
+def result_text_allHidden(result_text):
+    for i in result_text:
+        if(i.winfo_ismapped()):
+            i.place_forget()
+    
