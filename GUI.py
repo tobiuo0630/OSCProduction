@@ -50,6 +50,7 @@ def event_catch(queue,root,display_text,result_text):
             #文字の書き換え
             hidden(display_text[0])
             display(display_text[1],100,100)
+            #アニメーション
         else:
             hidden(display_text[1])
             bluetoothTag_judg(received_data,result_text)
