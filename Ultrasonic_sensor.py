@@ -52,19 +52,26 @@ def get_distance():
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
 
     
-def Ultrasonic_scan(queue,scanner):
+def Ultrasonic_scan(queue,scanner,com_display_result):
+    com_result = True#検知結果の表示が完了したことを表す。初期値はTrue
+
     while True:
         try:
             distance = '{:.1f}'.format(get_distance())
             print("Distance: " + distance + "cm")
-            if(float(distance)<=5.0):
+
+            if(not(com_display_result.qsize()==0)):
+                com_result = com_display_result.get()
+
+            if(float(distance)<=5.0 and com_result):
+                com_result=False
                 scan = True
                 queue.put(scan)
-                devices = scanner.scan(10.0)
+                devices = scanner.scan(1.5)
                 
                 queue.put(devices)
                 
-            time.sleep(10)
+            time.sleep(3)
             
         except KeyboardInterrupt:
             GPIO.cleanup()
@@ -78,10 +85,11 @@ scan = False
 
 if __name__ == "__main__":
     queue = Queue()
+    com_display_result = Queue()
     root = tkinter.Tk()
     
-    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(queue,scanner))
+    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(queue,scanner,com_display_result))
     Ultrasonic_thread.start()
     
-    GUI.display_bring(queue,root)
+    GUI.display_bring(queue,root,com_display_result)
     

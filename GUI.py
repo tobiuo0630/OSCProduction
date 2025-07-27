@@ -2,7 +2,7 @@ import tkinter
 import tkinter.font as font
 
 
-def display_bring(queue,root):
+def display_bring(queue,root,com_display_result):
     
     #root.attributes('-fullscreen',True)
     root.title("display_belong")
@@ -37,12 +37,12 @@ def display_bring(queue,root):
     display_text = [standby_text,detecting_text]
     result_text = [result_phone1,result_phone2,result_wallet1,result_wallet2]
 
-    event_catch(queue,root,display_text,result_text)
+    event_catch(queue,root,display_text,result_text,com_display_result)
 
     root.mainloop()
 
 
-def event_catch(queue,root,display_text,result_text):
+def event_catch(queue,root,display_text,result_text,com_display_result):
     if(not(queue.qsize()==0)):
         received_data = queue.get()
        
@@ -53,19 +53,20 @@ def event_catch(queue,root,display_text,result_text):
             #アニメーション
         else:
             hidden(display_text[1])
-            bluetoothTag_judg(received_data,result_text)
+            bluetoothTag_judg(root,display_text[0],received_data,result_text,com_display_result)
 
             
             #display(display_text[0],100,100)
             
-    root.after(100,event_catch,queue,root,display_text,result_text)
+    root.after(100,event_catch,queue,root,display_text,result_text,com_display_result)
 
 
-def bluetoothTag_judg(received_data,result_text):
+def bluetoothTag_judg(root,display_text,received_data,result_text,com_display_result):
     AirTag_black_Mac = "4c:e1:00:38:10:36"
     AirTag_white_Mac = "4c:e1:00:36:07:81"
     white=False
     black=False
+
     result_text_allHidden(result_text)
     
     for dev in received_data:
@@ -81,6 +82,9 @@ def bluetoothTag_judg(received_data,result_text):
     if(not(black)):
         display(result_text[3],200,110)
     
+    root.after(10000,result_text_allHidden,result_text)
+    root.after(10100,display,display_text,100,100)
+    root.after(10101,queue_put,com_display_result)
 
 #文字表示関数:
 def hidden(target_text):
@@ -95,4 +99,8 @@ def result_text_allHidden(result_text):
     for i in result_text:
         if(i.winfo_ismapped()):
             i.place_forget()
-    
+
+
+def queue_put(com_display_result):
+    com_result = True
+    com_display_result.put(com_result)
