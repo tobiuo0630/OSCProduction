@@ -12,6 +12,7 @@ import tkinter
 trig_pin =15 #GPIO(General Purpose input/output(汎用入出力）) 15 command to emit ultrasound
 echo_pin = 14 #GPIO 14 returns reflection time
 speed_of_sound = 34370 #20℃での音速(cm/s)
+Ultrasonic_scan_distance = 36.0
 
 
 #pythonでGPIOピンを安全かつ意図通りに使うための初期化設定
@@ -51,6 +52,10 @@ def get_distance():
     
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
 
+
+def thread_kill_specific_time():
+    
+
     
 def Ultrasonic_scan(queue,scanner,com_display_result):
     com_result = True#検知結果の表示が完了したことを表す。初期値はTrue
@@ -63,7 +68,7 @@ def Ultrasonic_scan(queue,scanner,com_display_result):
             if(not(com_display_result.qsize()==0)):
                 com_result = com_display_result.get()
 
-            if(float(distance)<=36.0 and com_result):
+            if(float(distance)<=Ultrasonic_scan_distance and com_result):
                 com_result=False
                 scan = True
                 queue.put(scan)
@@ -71,7 +76,8 @@ def Ultrasonic_scan(queue,scanner,com_display_result):
                 
                 queue.put(devices)
                 
-            time.sleep(3)
+            time.sleep(1)
+            
             
         except KeyboardInterrupt:
             GPIO.cleanup()

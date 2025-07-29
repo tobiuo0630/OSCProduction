@@ -2,6 +2,7 @@ import tkinter
 import tkinter.font as font
 from PIL import Image
 from PIL import ImageTk
+from datetime import datetime,time
 
 
 standby_text_x=780
@@ -75,6 +76,9 @@ def display_bring(queue,root,com_display_result):
     root.title("display_belong")
     root.configure(bg="white")
     root.bind('<Escape>',lambda event: exit_fullscreen(event,root))
+
+
+    thread_kill_specified_time()
 
     #待機中の文字
     font_standby_text = font.Font(family="DejaVu Sans Mono",size=100,weight="bold")
@@ -185,3 +189,16 @@ def queue_put(com_display_result):
 
 def exit_fullscreen(event,window):
     window.destroy()
+
+
+def thread_kill_specified_time(root):
+
+    now_time = datetime.now()
+    kill_time = now_time.replace(hour=9,minute=0,second=0,microsecond=0)
+
+    if now_time >= kill_time:
+        root.destroy()
+    else:
+        remaining_ms = int((kill_time - now_time).total_seconds() * 1000)
+        root.after(remaining_ms,root.destroy)
+        
