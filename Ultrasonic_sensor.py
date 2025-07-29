@@ -67,7 +67,7 @@ def Ultrasonic_scan(queue,scanner,com_display_result):
                 com_result=False
                 scan = True
                 queue.put(scan)
-                devices = scanner.scan(1.5)
+                devices = scanner.scan(4)
                 
                 queue.put(devices)
                 
