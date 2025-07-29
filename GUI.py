@@ -16,7 +16,7 @@ result_black_x = 650
 result_black_y = 600
 pp_path = "gifImage/parrot.gif"
 
-
+#gif画像の描画、制御を行うクラス
 class GifPlayer:
     def __init__(self, root, gif_path):
         self.root = root
@@ -78,12 +78,12 @@ def display_bring(queue,root,com_display_result):
 
     #待機中の文字
     font_standby_text = font.Font(family="DejaVu Sans Mono",size=100,weight="bold")
-    standby_text = tkinter.Label(text="待機中",foreground='#ff0000',background='#ffffff',font=font_standby_text)
+    standby_text = tkinter.Label(text="待機中",foreground='#87cefa',background='#ffffff',font=font_standby_text)
     display(standby_text,standby_text_x,standby_text_y)
 
     #検知中の文字
     font_detecting_text = font.Font(family="DejaVu Sans Mono",size=100,weight="bold")
-    detecting_text = tkinter.Label(text="検知中",foreground='#ff0000',background='#ffffff',font=font_detecting_text)
+    detecting_text = tkinter.Label(text="検知中",foreground='#ffd700',background='#ffffff',font=font_detecting_text)
     hidden(detecting_text)
 
     #検知結果の文字
