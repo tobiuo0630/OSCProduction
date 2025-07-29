@@ -140,16 +140,17 @@ def event_catch(queue,root,display_text,result_text,com_display_result,party_par
 def bluetoothTag_judg(root,display_text,received_data,result_text,com_display_result):
     AirTag_black_Mac = "4c:e1:00:38:10:36"
     AirTag_white_Mac = "4c:e1:00:36:07:81"
+    AirTag_RSSI = -66
     white=False
     black=False
 
     result_text_allHidden(result_text)
     
     for dev in received_data:
-        if(dev.addr==AirTag_white_Mac):
+        if(dev.addr==AirTag_white_Mac and dev.rssi>=AirTag_RSSI):
             display(result_text[0],result_white_x,result_white_y)
             white=True
-        if(dev.addr==AirTag_black_Mac):
+        if(dev.addr==AirTag_black_Mac and dev.rssi>=AirTag_RSSI):
             display(result_text[2],result_black_x,result_black_y)  
             black=True        
     

@@ -63,7 +63,7 @@ def Ultrasonic_scan(queue,scanner,com_display_result):
             if(not(com_display_result.qsize()==0)):
                 com_result = com_display_result.get()
 
-            if(float(distance)<=5.0 and com_result):
+            if(float(distance)<=36.0 and com_result):
                 com_result=False
                 scan = True
                 queue.put(scan)
