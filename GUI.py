@@ -2,6 +2,7 @@ import tkinter
 import tkinter.font as font
 from PIL import Image
 from PIL import ImageTk
+from datetime import datetime
 
 
 standby_text_x=780
@@ -109,6 +110,8 @@ def display_bring(queue,root,com_display_result):
 
     event_catch(queue,root,display_text,result_text,com_display_result,party_parrot)
 
+    thread_kill_specified_time(root)
+
     root.mainloop()
 
 
@@ -160,8 +163,8 @@ def bluetoothTag_judg(root,display_text,received_data,result_text,com_display_re
         display(result_text[3],result_black_x,result_black_y)
     
     root.after(10000,result_text_allHidden,result_text)
-    root.after(10100,display,display_text,standby_text_x,standby_text_y)
-    root.after(10101,queue_put,com_display_result)
+    root.after(11000,display,display_text,standby_text_x,standby_text_y)
+    root.after(11100,queue_put,com_display_result)
 
 #文字表示関数:
 def hidden(target_text):
@@ -185,3 +188,16 @@ def queue_put(com_display_result):
 
 def exit_fullscreen(event,window):
     window.destroy()
+
+
+def thread_kill_specified_time(root):
+
+    now_time = datetime.now()
+    kill_time = now_time.replace(hour=8,minute=30,second=0,microsecond=0)
+
+    if now_time >= kill_time:
+        root.destroy()
+    else:
+        remaining_ms = int((kill_time - now_time).total_seconds() * 1000)
+        root.after(remaining_ms,root.destroy)
+        
