@@ -6,6 +6,8 @@ import threading
 import GUI
 from queue import Queue
 import tkinter
+from datetime import datetime
+from datetime import time as t
 
 
 
@@ -51,16 +53,15 @@ def get_distance():
     t2 = time.time()#超音波の受信時間 #falseで計測終了
     
     return (t2-t1) * speed_of_sound /2 #時間*速さ=距離(t2-t1は対象物までの往復時間）
-
-
-def thread_kill_specific_time():
     
-
     
-def Ultrasonic_scan(queue,scanner,com_display_result):
+def Ultrasonic_scan(queue,scanner,com_display_result,thread_kill_time):
     com_result = True#検知結果の表示が完了したことを表す。初期値はTrue
 
     while True:
+        now_time = datetime.now()
+        if(now_time >= thread_kill_time):
+            return
         try:
             distance = '{:.1f}'.format(get_distance())
             print("Distance: " + distance + "cm")
@@ -93,8 +94,11 @@ if __name__ == "__main__":
     queue = Queue()
     com_display_result = Queue()
     root = tkinter.Tk()
-    
-    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(queue,scanner,com_display_result))
+
+    now_time = datetime.now()
+    thread_kill_time = now_time.replace(hour=8,minute=30,second=0,microsecond=0)
+
+    Ultrasonic_thread = threading.Thread(target=Ultrasonic_scan,args=(queue,scanner,com_display_result,thread_kill_time))
     Ultrasonic_thread.start()
     
     GUI.display_bring(queue,root,com_display_result)

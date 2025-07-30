@@ -2,7 +2,7 @@ import tkinter
 import tkinter.font as font
 from PIL import Image
 from PIL import ImageTk
-from datetime import datetime,time
+from datetime import datetime
 
 
 standby_text_x=780
@@ -77,9 +77,6 @@ def display_bring(queue,root,com_display_result):
     root.configure(bg="white")
     root.bind('<Escape>',lambda event: exit_fullscreen(event,root))
 
-
-    thread_kill_specified_time()
-
     #待機中の文字
     font_standby_text = font.Font(family="DejaVu Sans Mono",size=100,weight="bold")
     standby_text = tkinter.Label(text="待機中",foreground='#87cefa',background='#ffffff',font=font_standby_text)
@@ -112,6 +109,8 @@ def display_bring(queue,root,com_display_result):
     result_text = [result_phone1,result_phone2,result_wallet1,result_wallet2]
 
     event_catch(queue,root,display_text,result_text,com_display_result,party_parrot)
+
+    thread_kill_specified_time(root)
 
     root.mainloop()
 
@@ -164,8 +163,8 @@ def bluetoothTag_judg(root,display_text,received_data,result_text,com_display_re
         display(result_text[3],result_black_x,result_black_y)
     
     root.after(10000,result_text_allHidden,result_text)
-    root.after(10100,display,display_text,standby_text_x,standby_text_y)
-    root.after(10101,queue_put,com_display_result)
+    root.after(11000,display,display_text,standby_text_x,standby_text_y)
+    root.after(11100,queue_put,com_display_result)
 
 #文字表示関数:
 def hidden(target_text):
@@ -194,7 +193,7 @@ def exit_fullscreen(event,window):
 def thread_kill_specified_time(root):
 
     now_time = datetime.now()
-    kill_time = now_time.replace(hour=9,minute=0,second=0,microsecond=0)
+    kill_time = now_time.replace(hour=8,minute=30,second=0,microsecond=0)
 
     if now_time >= kill_time:
         root.destroy()
