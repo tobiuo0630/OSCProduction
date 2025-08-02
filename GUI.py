@@ -110,7 +110,7 @@ def display_bring(queue,root,com_display_result):
 
     event_catch(queue,root,display_text,result_text,com_display_result,party_parrot)
 
-    thread_kill_specified_time(root)
+    #thread_kill_specified_time(root)
 
     root.mainloop()
 
@@ -163,8 +163,8 @@ def bluetoothTag_judg(root,display_text,received_data,result_text,com_display_re
         display(result_text[3],result_black_x,result_black_y)
     
     root.after(10000,result_text_allHidden,result_text)
-    root.after(11000,display,display_text,standby_text_x,standby_text_y)
-    root.after(11100,queue_put,com_display_result)
+    root.after(10000,display,display_text,standby_text_x,standby_text_y)
+    root.after(10000,queue_put,com_display_result)
 
 #文字表示関数:
 def hidden(target_text):

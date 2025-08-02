@@ -59,9 +59,9 @@ def Ultrasonic_scan(queue,scanner,com_display_result,thread_kill_time):
     com_result = True#検知結果の表示が完了したことを表す。初期値はTrue
 
     while True:
-        now_time = datetime.now()
-        if(now_time >= thread_kill_time):
-            return
+        #now_time = datetime.now()
+        #if(now_time >= thread_kill_time):
+        #    return
         try:
             distance = '{:.1f}'.format(get_distance())
             print("Distance: " + distance + "cm")
