@@ -15,7 +15,7 @@ result_white_x = 650
 result_white_y = 400
 result_black_x = 650
 result_black_y = 600
-pp_path = "gifImage/parrot.gif"
+pp_path = "gifImage/parrot_200.gif"
 
 #gif画像の描画、制御を行うクラス
 class GifPlayer:
